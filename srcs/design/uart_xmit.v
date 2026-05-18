@@ -26,7 +26,7 @@ reg [3:0] count_xmit; 		// internal counter for 16 cycle
 reg [$clog2(WORD_LEN):0] index = 0;	// index of the data here WORD_LEN=8 bit data
  
 
-always@(posedge uart_clk)
+always@(posedge uart_clk or negedge sys_rst_l)
 begin
 	if(!sys_rst_l) begin
 		state <= IDLE;

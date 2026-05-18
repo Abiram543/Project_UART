@@ -18,7 +18,7 @@ localparam CW = $clog2(CV);	// counter width
 //counter reg for generating baud clock
 reg [CW-1:0] count;
 	
-always@(posedge sys_clk) begin
+always@(posedge sys_clk or negedge sys_rst_l) begin
 	if(!sys_rst_l) begin
 		count <= 0;
 		uart_clk <= 0;
