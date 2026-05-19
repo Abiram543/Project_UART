@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 `default_nettype none
 
 module uart_rec #(
@@ -45,13 +43,17 @@ begin
 	if(!sys_rst_l)begin
 		state <= START;
 		count_rec <= 0;
+		rec_readyH <= 1;
+	    rec_busy <= 0;
+		rec_dataH <= 0;
 	end
 	else begin
 		case(state)
 		START: begin
 			index <= 0;
-			rec_dataH <= rec_dataH_temp;
 			if(reg2 == 0) begin
+			     rec_readyH <= 0;
+			     rec_busy <= 1;
 			     if(count_rec == 4'd15) begin
 			     	if(temp) begin
 			     		state <= DATA;
@@ -115,8 +117,12 @@ begin
 			else begin
 				count_rec <= count_rec + 1;
 				state <= STOP;
-				if(count_rec == 4'd7 && reg2 == 1)
+				if(count_rec == 4'd7 && reg2 == 1) begin
+				    rec_dataH <= rec_dataH_temp;
 					temp <= 1;
+					rec_readyH <= 1;
+			        rec_busy <= 0;
+				end
 				else
 					temp <= temp;
 			end
@@ -134,11 +140,6 @@ begin
 	end
 end
 
-//Output logic
-always@(*) begin
-	rec_busy = (state != START);
-	rec_readyH = (state == START);
-end
 
 endmodule
 					

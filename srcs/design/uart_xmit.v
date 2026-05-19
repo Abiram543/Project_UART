@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 `default_nettype none
 
 module uart_xmit #(
@@ -16,15 +14,15 @@ parameter WORD_LEN = 8
 
 // state parameterization
 localparam IDLE = 2'b00,
-				START = 2'b01,
-				DATA = 2'b10,
-				STOP = 2'b11;
+	   START = 2'b01,
+	   DATA = 2'b10,
+	   STOP = 2'b11;
 
 // reg declaration
 reg [1:0] state;
 reg [3:0] count_xmit; 		// internal counter for 16 cycle
 reg [$clog2(WORD_LEN):0] index = 0;	// index of the data here WORD_LEN=8 bit data
- 
+reg [WORD_LEN-1:0] xmit_dataH_temp = 0; // Temp reg of ip
 
 always@(posedge uart_clk or negedge sys_rst_l)
 begin
@@ -38,6 +36,7 @@ begin
 		    count_xmit <= 0;
 			if(xmitH) begin
 					state <= START;
+					xmit_dataH_temp <= xmit_dataH; //temp of ip
 				end
 			else begin
 				state <= IDLE;
@@ -97,7 +96,7 @@ always@(*)begin
 	case(state)
 	   IDLE: uart_xmit_dataH = 1;
 	   START: uart_xmit_dataH = 0;
-	   DATA: uart_xmit_dataH = xmit_dataH[index];
+	   DATA: uart_xmit_dataH = xmit_dataH_temp[index];
 	   STOP: uart_xmit_dataH = 1;
 	   default: uart_xmit_dataH = 1;
 	endcase
