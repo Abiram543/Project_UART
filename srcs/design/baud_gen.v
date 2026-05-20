@@ -1,9 +1,7 @@
-`timescale 1ns / 1ps
-
 `default_nettype none
 
 module baud_gen #(
-parameter BAUD = 2400,
+parameter BAUD = 2400,		// default baud rate = 2400 bits per sec
 parameter XTAL_CLK = 100_000_000,	// 100MHz
 parameter WORD_LEN = 8
 )(
@@ -13,10 +11,10 @@ output reg uart_clk
 );
 
 localparam integer CV = XTAL_CLK/(16*2*BAUD);	// count value
-localparam CW = $clog2(CV);	// counter width
+localparam integer CW = $clog2(CV);	// counter width
 
 //counter reg for generating baud clock
-reg [CW-1:0] count;
+reg [CW:0] count;
 	
 always@(posedge sys_clk) begin
 	if(!sys_rst_l) begin
@@ -31,6 +29,3 @@ always@(posedge sys_clk) begin
 		count <= count + 1;
 end
 endmodule
-
-	
-
