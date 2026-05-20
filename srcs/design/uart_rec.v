@@ -1,4 +1,3 @@
-
 `default_nettype none
 
 module uart_rec #(
@@ -52,10 +51,10 @@ begin
 		case(state)
 		START: begin
 			index <= 0;
-			if(uart_REC_dataH == 0) begin
+			if(reg2 == 0) begin
 			     rec_readyH <= 0;
 			     rec_busy <= 1;
-			     if(count_rec == 4'd15) begin
+			     if(count_rec == 4'd13) begin
 			     	if(!temp) begin
 			     		state <= DATA;
 			     		count_rec <= 0;
@@ -69,7 +68,7 @@ begin
 			     else begin
 			          state <= START;
 			     	count_rec <= count_rec + 1;
-			     	if(count_rec == 4'd7)
+			     	if(count_rec == 4'd5)
 			     		temp <= reg2;
 			     	else
 			     		temp <= reg2;
@@ -145,5 +144,3 @@ end
 
 
 endmodule
-					
-
