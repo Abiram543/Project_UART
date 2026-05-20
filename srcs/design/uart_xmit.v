@@ -14,9 +14,9 @@ parameter WORD_LEN = 8
 
 // state parameterization
 localparam IDLE = 2'b00,
-	   START = 2'b01,
-	   DATA = 2'b10,
-	   STOP = 2'b11;
+				START = 2'b01,
+				DATA = 2'b10,
+				STOP = 2'b11;
 
 // reg declaration
 reg [1:0] state;
@@ -84,6 +84,7 @@ begin
 		
 		default: begin
 			state <= IDLE;
+			count_xmit <= 0;
 		end
 		endcase
 	end
