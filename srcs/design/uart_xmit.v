@@ -1,3 +1,4 @@
+
 `default_nettype none
 
 module uart_xmit #(
@@ -84,7 +85,7 @@ begin
 		
 		default: begin
 			state <= IDLE;
-			count_xmit <= 0;
+			
 		end
 		endcase
 	end
@@ -95,11 +96,31 @@ always@(*)begin
 	xmit_active = (state != IDLE);
 	xmit_doneH = (state == IDLE);
 	case(state)
-	   IDLE: uart_xmit_dataH = 1;
-	   START: uart_xmit_dataH = 0;
-	   DATA: uart_xmit_dataH = xmit_dataH_temp[index];
-	   STOP: uart_xmit_dataH = 1;
-	   default: uart_xmit_dataH = 1;
+	   IDLE: begin
+	       uart_xmit_dataH = 1;
+	       xmit_active = 0;
+	       xmit_doneH = 1;
+	   end
+	   START: begin
+	       uart_xmit_dataH = 0;
+	       xmit_active = 1;
+	       xmit_doneH = 0;
+	   end
+	   DATA: begin
+	       uart_xmit_dataH = xmit_dataH_temp[index];
+	       xmit_active = 1;
+	       xmit_doneH = 0;
+	   end
+	   STOP: begin
+	       uart_xmit_dataH = 1;
+	       xmit_active = 1;
+	       xmit_doneH = 0;
+	   end
+	   default: begin
+	       uart_xmit_dataH = 1;
+	       xmit_active = 0;
+	       xmit_doneH = 1;
+	   end
 	endcase
 end
 
