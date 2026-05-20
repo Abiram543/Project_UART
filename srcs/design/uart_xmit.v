@@ -93,8 +93,6 @@ end
 
 //Output logic
 always@(*)begin
-	xmit_active = (state != IDLE);
-	xmit_doneH = (state == IDLE);
 	case(state)
 	   IDLE: begin
 	       uart_xmit_dataH = 1;
@@ -126,5 +124,4 @@ end
 
 
 endmodule
-
 
